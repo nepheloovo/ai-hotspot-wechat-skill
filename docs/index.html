@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>小渡 · AI 热点公众号写作 Skill</title>
+  <style>
+    :root {
+      --bg: #0b0b0f;
+      --card: #14141a;
+      --text: #f5f5f7;
+      --muted: #a1a1aa;
+      --line: rgba(255,255,255,.08);
+      --accent: #7c6cff;
+      --accent2: #32d4a4;
+      --radius: 18px;
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; font-family: var(--font); color: var(--text);
+      background:
+        radial-gradient(900px 500px at 10% -10%, rgba(124,108,255,.28), transparent 60%),
+        radial-gradient(700px 400px at 90% 0%, rgba(50,212,164,.18), transparent 55%),
+        var(--bg);
+      min-height: 100vh;
+    }
+    a { color: inherit; }
+    .wrap { width: min(960px, calc(100% - 40px)); margin: 0 auto; }
+    .nav {
+      position: sticky; top: 0; z-index: 20;
+      backdrop-filter: blur(16px); background: rgba(11,11,15,.72);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; gap: 12px; }
+    .brand { font-weight: 650; letter-spacing: .02em; }
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      border: 0; border-radius: 999px; padding: 12px 18px; font: inherit; font-weight: 600;
+      cursor: pointer; text-decoration: none; transition: transform .2s ease, opacity .2s ease, background .2s ease;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), #5b8cff); color: white; box-shadow: 0 10px 30px rgba(124,108,255,.35); }
+    .btn-ghost { background: rgba(255,255,255,.06); color: var(--text); border: 1px solid var(--line); }
+    .btn-small { padding: 8px 12px; font-size: 13px; font-weight: 500; }
+    .hero { padding: 72px 0 40px; text-align: center; }
+    .eyebrow { color: var(--accent2); font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 14px; }
+    h1 { font-size: clamp(28px, 5vw, 44px); line-height: 1.15; margin: 0 0 16px; letter-spacing: -.02em; }
+    .sub { color: var(--muted); font-size: clamp(16px, 2.2vw, 18px); line-height: 1.7; max-width: 640px; margin: 0 auto 28px; }
+    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    section.block { padding: 28px 0 8px; }
+    .section-title { font-size: 22px; margin: 0 0 14px; }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.04), transparent), var(--card);
+      border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 22px;
+      box-shadow: var(--shadow);
+    }
+    .muted { color: var(--muted); line-height: 1.75; }
+    .steps { display: grid; gap: 12px; }
+    .step {
+      border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: rgba(255,255,255,.02);
+    }
+    .step-head {
+      width: 100%; display: flex; align-items: center; gap: 12px; padding: 16px 18px;
+      background: transparent; border: 0; color: inherit; font: inherit; cursor: pointer; text-align: left;
+    }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(124,108,255,.18); color: #c8c1ff; font-size: 13px; font-weight: 700; flex: none;
+    }
+    .step-title { font-weight: 650; flex: 1; }
+    .chev { opacity: .55; transition: transform .25s ease; }
+    .step.open .chev { transform: rotate(180deg); }
+    .step-body {
+      max-height: 0; overflow: hidden; opacity: 0;
+      transition: max-height .35s ease, opacity .25s ease, padding .25s ease;
+      padding: 0 18px; color: var(--muted); line-height: 1.7;
+    }
+    .step.open .step-body { max-height: 220px; opacity: 1; padding: 0 18px 16px; }
+    pre {
+      margin: 12px 0 0; padding: 14px 16px; border-radius: 12px; overflow: auto;
+      background: #0a0a0e; border: 1px solid var(--line); color: #d4d4d8; font-size: 13px; line-height: 1.55;
+    }
+    .reveal {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    .demo-bar {
+      position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+      display: none; gap: 8px; align-items: center; padding: 10px 12px; border-radius: 999px;
+      background: rgba(20,20,26,.92); border: 1px solid var(--line); box-shadow: var(--shadow); z-index: 30;
+    }
+    .demo-bar.on { display: flex; }
+    .demo-bar span { font-size: 13px; color: var(--muted); padding: 0 6px; }
+    footer { padding: 48px 0 96px; color: var(--muted); font-size: 13px; text-align: center; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .step-body, .chev { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <div class="wrap nav-inner">
+      <div class="brand">小渡 Skill</div>
+      <div class="nav-actions">
+        <button class="btn btn-ghost btn-small" id="demoBtn" type="button">演示</button>
+        <a class="btn btn-primary btn-small" href="https://github.com/nepheloovo/ai-hotspot-wechat-skill" target="_blank" rel="noopener">查看 Skill / 打开仓库</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="wrap hero reveal">
+    <div class="eyebrow">Product Skill</div>
+    <h1>小渡 · AI 热点公众号写作 Skill</h1>
+    <p class="sub">给刚开始关注 AI 的读者，用「小渡」口吻写热点解读。流程绑死，不空话、不编事实。</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="https://github.com/nepheloovo/ai-hotspot-wechat-skill" target="_blank" rel="noopener">查看 Skill / 打开仓库</a>
+      <button class="btn btn-ghost" id="demoBtn2" type="button">看四步演示</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="block reveal" id="who">
+      <h2 class="section-title">一、帮谁</h2>
+      <div class="card muted">
+        写给两类人：一是刚开始关注 AI、想搞懂「这件事到底意味着什么」的读者；二是要稳定产出 AI 热点公众号、又不想每次重新教 Agent 怎么写的人。装上这个 Skill，对 Agent 说「用小渡写某某热点」，就按固定流程出初稿。
+      </div>
+    </section>
+
+    <section class="block reveal" id="steps">
+      <h2 class="section-title">二、四步怎么写</h2>
+      <div class="steps" id="stepList">
+        <div class="step open" data-step="1">
+          <button class="step-head" type="button"><span class="step-num">1</span><span class="step-title">任务书</span><span class="chev">▾</span></button>
+          <div class="step-body">先写清：谁在读、真正问题、读后收获、核心判断、最强反方。写完必须等你确认，确认前不往下走。</div>
+        </div>
+        <div class="step" data-step="2">
+          <button class="step-head" type="button"><span class="step-num">2</span><span class="step-title">主张核对</span><span class="chev">▾</span></button>
+          <div class="step-body">列出 3–6 条主张。每条具体事实标来源：用户提供 / 已核实 / 小渡判断。材料不够就缩小范围或标「待核实」，不编。</div>
+        </div>
+        <div class="step" data-step="3">
+          <button class="step-head" type="button"><span class="step-num">3</span><span class="step-title">初稿</span><span class="chev">▾</span></button>
+          <div class="step-body">约 1200–2500 字 Markdown。自称小渡，口头禅至少一次，结尾有短期/长期判断；禁「赋能」「闭环」这类空话；文末附「主张—来源」简表。</div>
+        </div>
+        <div class="step" data-step="4">
+          <button class="step-head" type="button"><span class="step-num">4</span><span class="step-title">检查清单</span><span class="chev">▾</span></button>
+          <div class="step-body">交稿前逐条过：人设、口头禅、收尾判断、无禁说、来源归属、任务书已确认、未编亲历、未绑 CLI/草稿箱/自动生图。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block reveal" id="install">
+      <h2 class="section-title">三、怎么装到 GitHub</h2>
+      <div class="card muted">
+        仓库已开好。把目录拷进 Agent 能读到的 skills 路径即可：
+        <pre>cp -R . ~/.agents/skills/ai-hotspot-wechat</pre>
+        或项目级：
+        <pre>mkdir -p .agents/skills
+cp -R . .agents/skills/ai-hotspot-wechat</pre>
+        核心文件是 <code>SKILL.md</code>。装好后说：「用小渡写一篇某某热点的公众号」。
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">ai-hotspot-wechat-skill · 本地打开本页即可演示 · 转场支持跳过</footer>
+
+  <div class="demo-bar" id="demoBar">
+    <span id="demoLabel">演示中</span>
+    <button class="btn btn-ghost btn-small" id="demoNext" type="button">下一步</button>
+    <button class="btn btn-ghost btn-small" id="demoSkip" type="button">跳过</button>
+  </div>
+
+  <script>
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reveals = [...document.querySelectorAll('.reveal')];
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.12 });
+    reveals.forEach((el) => {
+      if (reduce) el.classList.add('in');
+      else io.observe(el);
+    });
+
+    const steps = [...document.querySelectorAll('.step')];
+    function openStep(n) {
+      steps.forEach((s) => s.classList.toggle('open', s.dataset.step === String(n)));
+    }
+    steps.forEach((s) => {
+      s.querySelector('.step-head').addEventListener('click', () => {
+        const already = s.classList.contains('open');
+        steps.forEach((x) => x.classList.remove('open'));
+        if (!already) s.classList.add('open');
+      });
+    });
+
+    let demoTimer = null;
+    let demoIdx = 0;
+    const demoBar = document.getElementById('demoBar');
+    const demoLabel = document.getElementById('demoLabel');
+    const tour = [
+      () => { document.getElementById('who').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); demoLabel.textContent = '1 / 3 帮谁'; },
+      () => { document.getElementById('steps').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); openStep(1); demoLabel.textContent = '2 / 3 四步 · 任务书'; },
+      () => { openStep(2); demoLabel.textContent = '2 / 3 四步 · 主张核对'; },
+      () => { openStep(3); demoLabel.textContent = '2 / 3 四步 · 初稿'; },
+      () => { openStep(4); demoLabel.textContent = '2 / 3 四步 · 检查清单'; },
+      () => { document.getElementById('install').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); demoLabel.textContent = '3 / 3 怎么装'; },
+    ];
+
+    function stopDemo() {
+      clearInterval(demoTimer); demoTimer = null; demoIdx = 0;
+      demoBar.classList.remove('on'); demoLabel.textContent = '演示中';
+    }
+    function runStep() {
+      if (demoIdx >= tour.length) { stopDemo(); return; }
+      tour[demoIdx++]();
+    }
+    function startDemo() {
+      stopDemo(); demoBar.classList.add('on'); runStep();
+      if (!reduce) demoTimer = setInterval(runStep, 1600);
+    }
+
+    document.getElementById('demoBtn').onclick = startDemo;
+    document.getElementById('demoBtn2').onclick = startDemo;
+    document.getElementById('demoNext').onclick = () => { clearInterval(demoTimer); demoTimer = null; runStep(); };
+    document.getElementById('demoSkip').onclick = stopDemo;
+  </script>
+</body>
+</html>
